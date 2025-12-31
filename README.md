@@ -2,6 +2,10 @@
 
 A comprehensive MERN stack application for managing medical appointments. Patients can book, manage, and track appointments with healthcare providers.
 
+## 🚀 Live Demo
+
+[View on Vercel](https://your-app.vercel.app) (Update after deployment)
+
 ## Features
 
 ### Patient Features
@@ -38,14 +42,12 @@ A comprehensive MERN stack application for managing medical appointments. Patien
 - **Zustand** for state management
 - **React Router** for navigation
 
-## Architecture
-
-For detailed system architecture, data flow, and pipeline documentation, see [ARCHITECTURE.md](./ARCHITECTURE.md).
-
 ## Project Structure
 
 ```
 MernStack/
+├── api/
+│   └── index.js              # Vercel serverless function
 ├── backend/
 │   ├── config/
 │   │   └── db.js              # MongoDB connection
@@ -54,12 +56,11 @@ MernStack/
 │   │   └── provider.controller.js
 │   ├── models/
 │   │   ├── Appointment.model.js
-│   │   ├── Provider.model.js
-│   │   └── Patient.model.js
+│   │   └── Provider.model.js
 │   ├── routes/
 │   │   ├── appointment.route.js
 │   │   └── provider.route.js
-│   └── index.js               # Express server setup
+│   └── seed.js                # Demo data seeder
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -74,6 +75,7 @@ MernStack/
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   └── package.json
+├── vercel.json                # Vercel configuration
 └── package.json
 ```
 
@@ -84,12 +86,18 @@ MernStack/
 - MongoDB (local or cloud instance)
 - npm or yarn
 
-### Backend Setup
+### Local Development
 
-1. Navigate to the project root directory
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ayesha-batool/HealthCare.git
+   cd HealthCare
+   ```
+
 2. Install dependencies:
    ```bash
    npm install
+   cd frontend && npm install && cd ..
    ```
 
 3. Create a `.env` file in the root directory:
@@ -104,29 +112,31 @@ MernStack/
    npm run dev
    ```
 
-### Frontend Setup
-
-1. Navigate to the frontend directory:
+5. Start the frontend (in a new terminal):
    ```bash
    cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
    npm run dev
    ```
 
-The application will be available at `http://localhost:5173` (or the port shown in the terminal).
+The application will be available at `http://localhost:5173`.
+
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+### Quick Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import project in Vercel dashboard
+3. Set environment variables:
+   - `MONGO_URI` - Your MongoDB connection string
+   - `NODE_ENV` - `production`
+4. Deploy!
 
 ## API Endpoints
 
 ### Appointments
-- `GET /api/appointments` - Get all appointments
+- `GET /api/appointments` - Get all appointments (with pagination, filtering, search)
 - `GET /api/appointments/:id` - Get appointment by ID
 - `GET /api/appointments/patient/:email` - Get appointments by patient email
 - `POST /api/appointments` - Create new appointment
@@ -134,17 +144,28 @@ The application will be available at `http://localhost:5173` (or the port shown 
 - `DELETE /api/appointments/:id` - Delete appointment
 
 ### Providers
-- `GET /api/providers` - Get all providers
+- `GET /api/providers` - Get all providers (with pagination, filtering, search)
 - `GET /api/providers/:id` - Get provider by ID
 - `POST /api/providers` - Create new provider
 - `PUT /api/providers/:id` - Update provider
 - `DELETE /api/providers/:id` - Delete provider
 
+### Query Parameters
+- `page` - Page number for pagination
+- `limit` - Items per page
+- `search` - Search term
+- `status` - Filter by status
+- `specialty` - Filter by provider specialty
+- `startDate` - Filter by start date
+- `endDate` - Filter by end date
+- `sortBy` - Field to sort by
+- `sortOrder` - `asc` or `desc`
+
 ## Usage
 
 ### Booking an Appointment
 
-1. Click "Book Appointment" in the navigation bar
+1. Click "Book" in the navigation bar
 2. Fill in patient information (name, email, phone)
 3. Select a healthcare provider from the dropdown or enter manually
 4. Choose appointment date and time
@@ -155,6 +176,8 @@ The application will be available at `http://localhost:5173` (or the port shown 
 ### Managing Appointments
 
 - **View**: All appointments are displayed on the home page
+- **Search**: Use the search bar to find appointments
+- **Filter**: Filter by status using the dropdown
 - **Edit**: Click the edit icon on any appointment card
 - **Cancel**: Click the delete icon on any appointment card
 - **Status**: Appointment status is shown with color-coded badges
@@ -163,7 +186,7 @@ The application will be available at `http://localhost:5173` (or the port shown 
 
 1. Navigate to "Providers" page
 2. Fill in provider details (name, specialty, email, phone)
-3. Click "Add Provider"
+3. Click "Add"
 4. View all providers in a grid layout
 5. Delete providers using the delete icon
 
@@ -184,22 +207,23 @@ The application is fully responsive and works seamlessly on:
 ### Dark Mode
 Toggle between light and dark themes using the theme switcher in the navigation bar.
 
-## Future Enhancements
+## Demo Data
 
-- User authentication and authorization
-- Email notifications for appointments
-- Calendar view for appointments
-- Provider availability management
-- Appointment reminders
-- Patient medical history tracking
-- Search and filter functionality
-- Export appointments to PDF
+To populate the database with demo data:
+```bash
+npm run seed
+```
 
-## License
+This will create 5 sample providers and 5 sample appointments.
 
-This project is open source and available for educational purposes.
+## Architecture
+
+For detailed system architecture, data flow, and pipeline documentation, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## License
+
+This project is open source and available for educational purposes.

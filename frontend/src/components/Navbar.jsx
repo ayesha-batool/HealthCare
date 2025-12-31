@@ -1,8 +1,6 @@
 import { Button, Container, Flex, HStack, Text, useColorMode } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { CalendarIcon } from "@chakra-ui/icons";
-import { IoMoon } from "react-icons/io5";
-import { LuSun } from "react-icons/lu";
+import { CalendarIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -15,7 +13,9 @@ const Navbar = () => {
         <HStack spacing={2}>
           <Link to="/book"><Button colorScheme="blue" leftIcon={<CalendarIcon />} size="sm">Book</Button></Link>
           <Link to="/providers"><Button variant="outline" colorScheme="blue" size="sm">Providers</Button></Link>
-          <Button onClick={toggleColorMode} variant="ghost" size="sm">{colorMode === "light" ? <IoMoon /> : <LuSun />}</Button>
+          <Button onClick={toggleColorMode} variant="ghost" size="sm" aria-label="Toggle color mode">
+            {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+          </Button>
         </HStack>
       </Flex>
     </Container>

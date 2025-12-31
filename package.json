@@ -1,0 +1,26 @@
+{
+  "name": "mernstack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon backend/index.js",
+    "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend",
+    "start":"NODE_ENV=production node backend/index.js",
+    "seed": "node backend/seed.js"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@chakra-ui/icons": "^2.2.4",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.14.1",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

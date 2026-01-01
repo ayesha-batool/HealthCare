@@ -28,12 +28,33 @@ app.use((req, res, next) => {
     }
 })
 
-// Routes
+// API Routes
 app.use("/api/appointments", appointmentRoutes)
 app.use("/api/providers", providerRoutes)
 
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", message: "API is running", timestamp: new Date().toISOString() })
+})
+
+// Serve static files from frontend/dist in production
+if (process.env.NODE_ENV === "production") {
+    const frontendPath = path.resolve(__dirname, "../frontend/dist")
+    app.use(express.static(frontendPath))
+    
+    // Serve index.html for all non-API routes (SPA routing)
+    app.get("*", (req, res) => {
+        // Don't serve index.html for API routes
+        if (req.path.startsWith("/api")) {
+            return res.status(404).json({ error: "API route not found" })
+        }
+        res.sendFile(path.join(frontendPath, "index.html"))
+    })
+}
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
+    console.log(`Environment: ${process.env.NODE_ENV || "development"}`)
     connectDB()
 })
 

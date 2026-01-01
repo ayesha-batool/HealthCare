@@ -11,6 +11,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Strip /api prefix for Vercel serverless functions
+// Vercel routes /api/* to this function, but Express sees the full path
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/')) {
+        req.url = req.url.replace('/api', '') || '/';
+    } else if (req.path === '/api') {
+        req.url = '/';
+    }
+    next();
+});
+
 // CORS
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');

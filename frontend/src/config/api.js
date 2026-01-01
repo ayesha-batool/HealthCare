@@ -1,11 +1,16 @@
 // API Configuration
-// For Vercel: API routes are on the same domain (/api/*)
-// In development, it uses the proxy configured in vite.config.js
+// Supports both same-domain and separate deployments
 const getApiUrl = () => {
-  // Always use relative URLs - Vercel serves both frontend and API on same domain
-  // In development, Vite proxy handles /api requests
-  // In production, Vercel rewrites /api/* to serverless functions
-  return ''
+  // Production: Use environment variable if set (for separate deployments)
+  if (import.meta.env.PROD && import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // Development: Use localhost or proxy
+  if (import.meta.env.DEV) {
+    return 'http://localhost:5000';
+  }
+  // Production without VITE_API_URL: Use relative URLs (same domain)
+  return '';
 }
 
 export const API_URL = getApiUrl()

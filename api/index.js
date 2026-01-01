@@ -15,17 +15,38 @@ app.use(express.urlencoded({ extended: true }));
 // We need to strip /api prefix so Express routes match correctly
 app.use((req, res, next) => {
     // Rewrite URL to remove /api prefix
-    if (req.url.startsWith('/api')) {
+    if (req.url && req.url.startsWith('/api')) {
         req.url = req.url.replace(/^\/api/, '') || '/';
     }
     next();
 });
 
-// CORS
+// CORS Configuration
+// Supports both same-domain and separate deployments
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'http://localhost:5173', // Vite dev server
+    'http://localhost:3000',  // Alternative dev port
+    '*' // Allow all in development (remove in production if using separate deployments)
+].filter(Boolean);
+
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
+    const origin = req.headers.origin;
+    
+    // In production with FRONTEND_URL, only allow that origin
+    if (process.env.NODE_ENV === 'production' && process.env.FRONTEND_URL) {
+        if (origin === process.env.FRONTEND_URL) {
+            res.header('Access-Control-Allow-Origin', origin);
+        }
+    } else {
+        // Development or no FRONTEND_URL: allow all
+        res.header('Access-Control-Allow-Origin', origin || '*');
+    }
+    
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-api-key, x-user-role');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
     if (req.method === 'OPTIONS') {
         res.sendStatus(200);
     } else {
@@ -36,7 +57,7 @@ app.use((req, res, next) => {
 // Connect to database (optimized for serverless - connection is cached)
 connectDB().catch(console.error);
 
-// Routes - Vercel will prefix these with /api
+// Routes
 app.use("/appointments", appointmentRoutes);
 app.use("/providers", providerRoutes);
 
@@ -49,7 +70,4 @@ app.get("/health", (req, res) => {
 app.get("/", (req, res) => {
     res.json({ message: "Healthcare Appointment System API", version: "1.0.0" });
 });
-
-// Export for Vercel serverless
-// NOTE: NO app.listen() here - Vercel handles the server automatically
 export default app;

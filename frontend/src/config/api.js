@@ -1,13 +1,10 @@
 // API Configuration
-// In production, this will use the Railway backend URL
+// For Vercel: API routes are on the same domain (/api/*)
 // In development, it uses the proxy configured in vite.config.js
 const getApiUrl = () => {
-  // Check if we're in production and have a backend URL
-  if (import.meta.env.PROD && import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL
-  }
-  // In development, use relative URLs (handled by Vite proxy)
-  // In production without VITE_API_URL, use relative URLs (same domain)
+  // Always use relative URLs - Vercel serves both frontend and API on same domain
+  // In development, Vite proxy handles /api requests
+  // In production, Vercel rewrites /api/* to serverless functions
   return ''
 }
 

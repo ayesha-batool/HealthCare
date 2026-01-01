@@ -10,6 +10,10 @@
     "seed": "node backend/seed.js"
   },
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "keywords": ["healthcare", "appointments", "mern", "react", "node"],
   "author": "",
   "license": "ISC",

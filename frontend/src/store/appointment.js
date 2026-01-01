@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { apiEndpoint } from "../config/api.js";
 
 export const useAppointmentStore = create((set) => ({
     appointments: [],
@@ -11,7 +12,7 @@ export const useAppointmentStore = create((set) => ({
     fetchAppointments: async () => {
         set({ loading: true, error: null });
         try {
-            const res = await fetch("/api/appointments");
+            const res = await fetch(apiEndpoint("/api/appointments"));
             
             // Check if response is OK and content-type is JSON
             if (!res.ok) {
@@ -38,7 +39,7 @@ export const useAppointmentStore = create((set) => ({
     fetchProviders: async () => {
         set({ loading: true, error: null });
         try {
-            const res = await fetch("/api/providers");
+            const res = await fetch(apiEndpoint("/api/providers"));
             
             // Check if response is OK and content-type is JSON
             if (!res.ok) {
@@ -71,7 +72,7 @@ export const useAppointmentStore = create((set) => ({
         }
         
         try {
-            const res = await fetch("/api/appointments", {
+            const res = await fetch(apiEndpoint("/api/appointments"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -107,7 +108,7 @@ export const useAppointmentStore = create((set) => ({
     
     updateAppointment: async (appointmentId, updatedAppointment) => {
         try {
-            const res = await fetch(`/api/appointments/${appointmentId}`, {
+            const res = await fetch(apiEndpoint(`/api/appointments/${appointmentId}`), {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -147,7 +148,7 @@ export const useAppointmentStore = create((set) => ({
     
     deleteAppointment: async (appointmentId) => {
         try {
-            const res = await fetch(`/api/appointments/${appointmentId}`, {
+            const res = await fetch(apiEndpoint(`/api/appointments/${appointmentId}`), {
                 method: "DELETE"
             });
             
@@ -182,7 +183,7 @@ export const useAppointmentStore = create((set) => ({
     
     getAppointmentsByPatient: async (email) => {
         try {
-            const res = await fetch(`/api/appointments/patient/${email}`);
+            const res = await fetch(apiEndpoint(`/api/appointments/patient/${email}`));
             const data = await res.json();
             if (data.success) {
                 return { success: true, data: data.data };
@@ -195,7 +196,7 @@ export const useAppointmentStore = create((set) => ({
     
     createProvider: async (newProvider) => {
         try {
-            const res = await fetch("/api/providers", {
+            const res = await fetch(apiEndpoint("/api/providers"), {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -231,7 +232,7 @@ export const useAppointmentStore = create((set) => ({
     
     deleteProvider: async (providerId) => {
         try {
-            const res = await fetch(`/api/providers/${providerId}`, {
+            const res = await fetch(apiEndpoint(`/api/providers/${providerId}`), {
                 method: "DELETE"
             });
             

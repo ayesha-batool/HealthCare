@@ -16,11 +16,43 @@ const PORT = process.env.PORT || 5000
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// CORS (if needed for production)
+// CORS Configuration
+const isAllowedOrigin = (origin) => {
+    if (!origin) return false
+    
+    // Development origins
+    if (process.env.NODE_ENV !== 'production') {
+        const devOrigins = ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5000']
+        return devOrigins.includes(origin)
+    }
+    
+    // Production: Check exact match or Netlify domains
+    if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+        return true
+    }
+    
+    // Allow all Netlify domains
+    if (origin.includes('.netlify.app') || origin.includes('.netlify.com')) {
+        return true
+    }
+    
+    return false
+}
+
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*')
+    const origin = req.headers.origin
+    
+    if (isAllowedOrigin(origin)) {
+        res.header('Access-Control-Allow-Origin', origin)
+    } else if (process.env.NODE_ENV === 'development') {
+        // In development, allow all origins
+        res.header('Access-Control-Allow-Origin', origin || '*')
+    }
+    
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-api-key, x-user-role')
+    res.header('Access-Control-Allow-Credentials', 'true')
+    
     if (req.method === 'OPTIONS') {
         res.sendStatus(200)
     } else {
@@ -37,20 +69,10 @@ app.get("/api/health", (req, res) => {
     res.json({ status: "ok", message: "API is running", timestamp: new Date().toISOString() })
 })
 
-// Serve static files from frontend/dist in production
-if (process.env.NODE_ENV === "production") {
-    const frontendPath = path.resolve(__dirname, "../frontend/dist")
-    app.use(express.static(frontendPath))
-    
-    // Serve index.html for all non-API routes (SPA routing)
-    app.get("*", (req, res) => {
-        // Don't serve index.html for API routes
-        if (req.path.startsWith("/api")) {
-            return res.status(404).json({ error: "API route not found" })
-        }
-        res.sendFile(path.join(frontendPath, "index.html"))
-    })
-}
+// Root API endpoint
+app.get("/", (req, res) => {
+    res.json({ message: "Healthcare Appointment System API", version: "1.0.0" })
+})
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

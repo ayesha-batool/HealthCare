@@ -2,6 +2,7 @@ import { Container, useColorModeValue, Box, Heading, VStack, Input, Button, useT
 import { useState, useEffect } from "react";
 import { useAppointmentStore } from "../store/appointment";
 import { DeleteIcon, AddIcon } from "@chakra-ui/icons";
+import { apiEndpoint } from "../config/api.js";
 
 const ProvidersPage = () => {
   const [newProvider, setNewProvider] = useState({ name: "", specialty: "", email: "", phone: "" });
@@ -39,7 +40,7 @@ const ProvidersPage = () => {
     setIsSubmitting(true);
     
     try {
-      const res = await fetch("/api/providers", {
+      const res = await fetch(apiEndpoint("/api/providers"), {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

@@ -11,31 +11,24 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Vercel automatically routes /api/* to this serverless function
-// We need to strip /api prefix so Express routes match correctly
+// Vercel routes /api/* to this serverless function
+// The path Express receives includes /api, so we need to strip it
 app.use((req, res, next) => {
-    // Log for debugging (can remove later)
-    console.log('Incoming request:', {
-        method: req.method,
-        url: req.url,
-        path: req.path,
-        originalUrl: req.originalUrl
-    });
+    // Log for debugging
+    const originalUrl = req.url;
+    const originalPath = req.path;
     
-    // Rewrite URL to remove /api prefix if present
+    // Strip /api prefix from URL and path
     if (req.url && req.url.startsWith('/api')) {
         req.url = req.url.replace(/^\/api/, '') || '/';
     }
-    if (req.path && req.path.startsWith('/api')) {
-        // Also update path if it has /api
-        const newPath = req.path.replace(/^\/api/, '') || '/';
-        // Note: req.path is read-only, but req.url change should be enough
-    }
     
-    console.log('Processed request:', {
-        method: req.method,
-        url: req.url,
-        path: req.path
+    // Also handle the path property (though it's derived from url)
+    // The key is modifying req.url which Express uses for routing
+    
+    console.log('Request routing:', {
+        original: { url: originalUrl, path: originalPath },
+        processed: { url: req.url, path: req.path }
     });
     
     next();

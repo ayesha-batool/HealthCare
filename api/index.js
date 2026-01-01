@@ -14,10 +14,30 @@ app.use(express.urlencoded({ extended: true }));
 // Vercel automatically routes /api/* to this serverless function
 // We need to strip /api prefix so Express routes match correctly
 app.use((req, res, next) => {
-    // Rewrite URL to remove /api prefix
+    // Log for debugging (can remove later)
+    console.log('Incoming request:', {
+        method: req.method,
+        url: req.url,
+        path: req.path,
+        originalUrl: req.originalUrl
+    });
+    
+    // Rewrite URL to remove /api prefix if present
     if (req.url && req.url.startsWith('/api')) {
         req.url = req.url.replace(/^\/api/, '') || '/';
     }
+    if (req.path && req.path.startsWith('/api')) {
+        // Also update path if it has /api
+        const newPath = req.path.replace(/^\/api/, '') || '/';
+        // Note: req.path is read-only, but req.url change should be enough
+    }
+    
+    console.log('Processed request:', {
+        method: req.method,
+        url: req.url,
+        path: req.path
+    });
+    
     next();
 });
 
